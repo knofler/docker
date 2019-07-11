@@ -1,0 +1,75 @@
+version: '3.4'
+services:
+  api:
+    build:
+      context: ../${API}/
+      dockerfile: Dockerfile
+      target: development
+    depends_on:
+      - db
+    ports:
+      - "${WEB_PORT:-8080}:8000"
+      - 8082:8082
+    volumes:
+      - ../${API}/client:/usr/src/app/client
+      - ../${API}/Intl:/usr/src/app/Intl
+      - ../${API}/generators:/usr/src/app/generators
+      - ../${API}/server:/usr/src/app/server
+      - ../${API}/.babelrc:/usr/src/app/.babelrc
+      - ../${API}/index.js:/usr/src/app/index.js
+      - ../${API}/nodemon.json:/usr/src/app/nodemon.json
+      - ../${API}/package.json:/usr/src/app/package.json
+      - ../${API}/package-lock.json:/usr/src/app/package-lock.json
+      - ../${API}/webpack.config.babel.js:/usr/src/app/webpack.config.babel.js
+      - ../${API}/webpack.config.dev.js:/usr/src/app/webpack.config.dev.js
+      - ../${API}/webpack.config.prod.js:/usr/src/app/webpack.config.prod.js
+      - ../${API}/webpack.config.server.js:/usr/src/app/webpack.config.server.js
+    environment:
+      NODE_ENV: development
+      MONGO_URL: mongodb://db:27017/api
+      API_URL: http://localhost:8080/api/posts
+      CORS_ORIGINS: http://localhost
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+    stdin_open: true
+    tty: true
+  db:
+    image: mongo:latest
+    volumes:
+      - dbdata:/data/db
+    ports:
+      - '27018:27017'
+  app:
+    build:
+      context: ../${APP}/
+      args:
+        REACT_APP_API_URL: http://192.168.99.100:8080/api/
+    #secrets:
+    expose:
+      - '3000/tcp'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ../${APP}/app:/app/app
+      - ../${APP}/internals:/app/internals
+    entrypoint: ['yarn', 'run', 'start']
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+  proxy:
+    build:
+      context: ../${PROXY}/
+    ports:
+      - '80:80'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost']
+      interval: 1m
+      timeout: 3s
+      retries: 3
+      start_period: 1m
+volumes:
+  dbdata:
