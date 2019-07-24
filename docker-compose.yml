@@ -47,6 +47,7 @@ services:
   app:
     build:
       context: ../${APP}/
+      dockerfile: Dockerfile
       args:
         REACT_APP_API_URL: http://192.168.99.100:8080/api/
     #secrets:
@@ -70,6 +71,7 @@ services:
   lambda:
     build:
       context: ../${LAMBDA}/
+      dockerfile: Dockerfile
     expose:
       - '3000/tcp'
     networks:
@@ -78,12 +80,41 @@ services:
     ports:
       - '3500:3000'
     volumes:
-      - ../${LAMBDA}/SRC:/lambda/src
+      - ../${LAMBDA}/src:/lambda/src
       - ../${LAMBDA}/serverless.yml:/lambda/serverless.yml
       - ../${LAMBDA}/package.json:/lambda/package.json
     # entrypoint: ['yarn', 'run', 'dev']
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3500']
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+  graphql:
+    build:
+      context: ../${GRAPHQL}/
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    expose:
+      - '3001/tcp'
+    networks:
+      - frontend
+      - backend
+    ports:
+      - '3001:3001'
+    volumes:
+      - ../${GRAPHQL}/src:/graphql/src
+      - ../${GRAPHQL}/package.json:/graphql/package.json
+    environment:
+      # NODE_ENV: development
+      MONGO_URL: mongodb://db:27017/api-design
+      CORS_ORIGINS: http://localhost
+    secrets:
+      - jwt
+    # entrypoint: ['yarn', 'run', 'dev']
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001']
       interval: 2m
       timeout: 10s
       retries: 3
@@ -108,3 +139,9 @@ networks:
 
 volumes:
   dbdata:
+
+secrets:
+  jwt:
+    external: true
+    file: ./secrets/jwt_secret.txt
+  

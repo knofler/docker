@@ -3,6 +3,7 @@
 coverage
 node_modules
 stats.json
+secrets
 
 # Cruft
 .DS_Store
