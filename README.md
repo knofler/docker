@@ -63,12 +63,12 @@
 $ cd docker
 ```
 
-Update **.env** file with 
+For local development update **.env** file with 
 
 - *AWS_ACCESS_KEY_ID* 
 - *AWS_SECRET_ACCESS_KEY*
 
-Your AWS account will need to have appropriate **MediaLiveAccessRole** policy assigned.
+Your AWS account will need to have appropriate access policy assigned.
 
 #### Run
 
@@ -225,9 +225,9 @@ Instructions and commands for ```lambda``` app in local development environment
 
    * PROXY_URL: [http://localhost](http://localhost)
    * APP_URL: [http://localhost:3000](http://localhost:3000)
-   * MONGO_URL: [mongodb://localhost:27018/api]([mongodb://localhost:27018/api])
+   * MONGO_URL: [mongodb://localhost:27017/api]([mongodb://localhost:27017/api])
    * API_URL: [http://localhost:8080/api/{model}](http://localhost:8080/api/{model})
    * AWS_API_URL: [http://localhost:8080/api/aws/{model}](http://localhost:8080/api/aws/{model})
    * LAMBDA_URL: [http://localhost:3500/](http://localhost:3500/)
    * GRAPHQL_URL: [http://localhost:3001/](http://localhost:3001/)
-   * GRAPHQL_MONGO_URL: [mongodb://localhost:27018/api-design](mongodb://localhost:27018/api-design)
+   * GRAPHQL_MONGO_URL: [mongodb://localhost:27017/api-design](mongodb://localhost:27017/api-design)
