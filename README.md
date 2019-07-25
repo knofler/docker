@@ -70,6 +70,12 @@ For local development update **.env** file with
 
 Your AWS account will need to have appropriate access policy assigned.
 
+
+In ```app``` directory create **.env** file following .env.example with 
+
+- *API_URL=`< Use localhost for local development, http://localhost:8080 >`* 
+- *DOCKER_API_URL= `<Use your docker cluster api url and port >`*
+
 #### Run
 
 Run following command to build **app(react)** , **api(nodejs)**, **db(mongo:latest)**, **proxy(nginx)** docker images and start the containers
@@ -178,6 +184,9 @@ Instructions and commands for ```lambda``` app in local development environment
     Global CLI Install:
       $ npm i -g serverless
 
+    Install Local Packages:
+      $ npm install
+
     Setup AWS Profile
 
       - provider:
@@ -211,6 +220,13 @@ Instructions and commands for ```lambda``` app in local development environment
 
       serverless remove
 
+Instructions and commands for ```generator``` app in local development environment
+
+    Install Local Packages:
+      $ npm install
+
+    Generator command
+      $ npm run generate
 
 
 
